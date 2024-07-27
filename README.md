@@ -9,10 +9,10 @@ This tool is the result of reverse-engineering the I2C bus of a Panasonic CRT an
 - [Installation](#installation)
 - [Connection to the TV](#connection-to-the-tv)
 - [Usage](#usage)
-- [Access VCT registers](#access-vct-registers)
+  - [Access VCT registers](#access-vct-registers)
     - [Read 16bit register at sub-address `0x4B` from VSP (`0x58`):](#read-16bit-register-at-sub-address-0x4b-from-vsp-0x58)
     - [Write word `0x81 0x08` to register located at sub-address `0x4B` of VSP (`0x58`):](#write-word-0x81-0x08-to-register-located-at-sub-address-0x4b-of-vsp-0x58)
-- [Access external EEPROM memory](#access-external-eeprom-memory)
+  - [Access external EEPROM memory](#access-external-eeprom-memory)
     - [Read byte (page 0, offset 0x10) from external EEPROM that is mapped from address 0x50 to 0x57](#read-byte-page-0-offset-0x10-from-external-eeprom-that-is-mapped-from-address-0x50-to-0x57)
     - [Ready byte (page 3, offset 0xFA) from external EEPROM:](#ready-byte-page-3-offset-0xfa-from-external-eeprom)
     - [Write byte to external EEPROM (page 0, offset 0x10):](#write-byte-to-external-eeprom-page-0-offset-0x10)
@@ -21,7 +21,7 @@ This tool is the result of reverse-engineering the I2C bus of a Panasonic CRT an
     - [Read EEPROM memory from offset 0x100 to offset 0x10F (page 1)](#read-eeprom-memory-from-offset-0x100-to-offset-0x10f-page-1)
     - [Read first 32 bytes from EEPROM memory](#read-first-32-bytes-from-eeprom-memory)
     - [Write EEPROM memory from binary file (can be used to restore TV settings)](#write-eeprom-memory-from-binary-file-can-be-used-to-restore-tv-settings)
-- [Multi purpose commands](#multi-purpose-commands)
+  - [Multi purpose commands](#multi-purpose-commands)
     - [Pull `SCL` low for 5 seconds (this can be used to put IC in bootloader mode)](#pull-scl-low-for-5-seconds-this-can-be-used-to-put-ic-in-bootloader-mode)
 
 
