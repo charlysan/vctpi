@@ -3,6 +3,28 @@
 This tool is the result of reverse-engineering the I2C bus of a Panasonic CRT and can be used to communicate with Micronas VCT video controller through i2c using a Raspberry Pi. A detailed explanation of the process can be found on [this wiki](https://github.com/charlysan/crt_stuff/wiki/I2C-Data-Injection-In-Panasonic-CRT).
 
 
+## Table of contents
+- [Disclaimer](#disclaimer)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Connection to the TV](#connection-to-the-tv)
+- [Usage](#usage)
+- [Access VCT registers](#access-vct-registers)
+    - [Read 16bit register at sub-address `0x4B` from VSP (`0x58`):](#read-16bit-register-at-sub-address-0x4b-from-vsp-0x58)
+    - [Write word `0x81 0x08` to register located at sub-address `0x4B` of VSP (`0x58`):](#write-word-0x81-0x08-to-register-located-at-sub-address-0x4b-of-vsp-0x58)
+- [Access external EEPROM memory](#access-external-eeprom-memory)
+    - [Read byte (page 0, offset 0x10) from external EEPROM that is mapped from address 0x50 to 0x57](#read-byte-page-0-offset-0x10-from-external-eeprom-that-is-mapped-from-address-0x50-to-0x57)
+    - [Ready byte (page 3, offset 0xFA) from external EEPROM:](#ready-byte-page-3-offset-0xfa-from-external-eeprom)
+    - [Write byte to external EEPROM (page 0, offset 0x10):](#write-byte-to-external-eeprom-page-0-offset-0x10)
+    - [Dump external EEPROM memory to binary file](#dump-external-eeprom-memory-to-binary-file)
+    - [Read EEPROM memory from offset 0x10 to offset 0x1F](#read-eeprom-memory-from-offset-0x10-to-offset-0x1f)
+    - [Read EEPROM memory from offset 0x100 to offset 0x10F (page 1)](#read-eeprom-memory-from-offset-0x100-to-offset-0x10f-page-1)
+    - [Read first 32 bytes from EEPROM memory](#read-first-32-bytes-from-eeprom-memory)
+    - [Write EEPROM memory from binary file (can be used to restore TV settings)](#write-eeprom-memory-from-binary-file-can-be-used-to-restore-tv-settings)
+- [Multi purpose commands](#multi-purpose-commands)
+    - [Pull `SCL` low for 5 seconds (this can be used to put IC in bootloader mode)](#pull-scl-low-for-5-seconds-this-can-be-used-to-put-ic-in-bootloader-mode)
+
+
 ## Disclaimer
 
 This tool is provided under the MIT License and is intended for experimental use. Users are advised to proceed at their own risk. The author assumes no responsibility or liability for any damage, data loss, hardware malfunction, or any issues that may render your TV inoperable as a result of using this tool. By using this tool, you acknowledge and accept that the author shall not be held responsible for any adverse effects or issues arising from its use.
@@ -27,6 +49,16 @@ git clone https://github.com/charlysan/vctpi.git
 sudo pigpiod
 ```
 
+## Connection to the TV
+
+By default, [vcti2clib](https://github.com/charlysan/vctpi/blob/main/vcti2clib/vcti2c.py#L6), is using the following pinout:
+```
+SDA_GPIO_PIN = 2
+SCL_GPIO_PIN = 3
+```
+
+You need to connect those two lines, along with GND, to TV's i2c service port.
+
 ## Usage
 
 The tool can be used to read/write to VCT registers, as well as read/write to external memories connected to the bus.
@@ -36,55 +68,55 @@ The tool can be used to read/write to VCT registers, as well as read/write to ex
 
 ### Access VCT registers
 
--- Read 16bit register at sub-address `0x4B` from VSP (`0x58`):
+#### Read 16bit register at sub-address `0x4B` from VSP (`0x58`):
 ```
 python vct_cli.py --rwas 0x58 0x4b
 0x81 0x00
 ```
 
--- Write word `0x81 0x08` to register located at sub-address `0x4B` of VSP (`0x58`):
+#### Write word `0x81 0x08` to register located at sub-address `0x4B` of VSP (`0x58`):
 ```
 python vct_cli.py --wwas 0x58 0x4b 0x81 0x08
 ```
 
 ### Access external EEPROM memory
 
--- Read byte (page 0, offset 0x10) from external EEPROM that is mapped from address 0x50 to 0x57
+#### Read byte (page 0, offset 0x10) from external EEPROM that is mapped from address 0x50 to 0x57
 
 ```
 python vct_cli.py --rbo 0x50 0x10
 0x36
 ```
 
--- Ready byte (page 3, offset 0xFA) from external EEPROM:
+#### Ready byte (page 3, offset 0xFA) from external EEPROM:
 ```
 python vct_cli.py --rbo 0x53 0xfa
 0x10
 ```
 
--- Write byte to external EEPROM (page 0, offset 0x10):
+#### Write byte to external EEPROM (page 0, offset 0x10):
 ```
 python vct_cli.py --wbo 0x50 0x10 0x37
 ```
 
--- Dump external EEPROM memory to binary file
+#### Dump external EEPROM memory to binary file
 ```
 python vct_cli.py --rmr 0x50 0x57 > e2_dump.bin
 ```
 
--- Read EEPROM memory from offset 0x10 to offset 0x1F
+#### Read EEPROM memory from offset 0x10 to offset 0x1F
 ```
 python vct_cli.py --rmb 0x50 0x10 0x1f | xxd -g 1
 00000000: 36 10 02 01 00 10 02 0f 90 a1 00 00 00 08 05 00  6...............
 ```
 
--- Read EEPROM memory from offset 0x100 to offset 0x10F (page 1)
+#### Read EEPROM memory from offset 0x100 to offset 0x10F (page 1)
 ```
 python vct_cli.py --rmb 0x51 0x00 0x0f | xxd -g 1
 00000000: 1b 00 06 00 b9 00 06 00 ba 00 06 00 bb 00 06 00  ................
 ```
 
--- Read first 32 bytes from EEPROM memory
+#### Read first 32 bytes from EEPROM memory
 ```
 python vct_cli.py --rmr 0x50 0x51 | xxd -g 1
 00000000: bd 10 00 00 04 00 00 00 00 00 00 00 00 00 00 46  ...............F
@@ -121,14 +153,14 @@ python vct_cli.py --rmr 0x50 0x51 | xxd -g 1
 000001f0: f4 00 06 00 f5 00 06 00 f6 00 06 00 f7 00 06 00  ................
 ```
 
--- Write EEPROM memory from binary file (can be used to restore TV settings)
+#### Write EEPROM memory from binary file (can be used to restore TV settings)
 ```
 python vct_cli.py --wmf 0x50 0x57 ./e2_dump.bin
 ```
 
 ### Multi purpose commands
 
--- Pull `SCL` low for 5 seconds (this can be used to put IC in bootloader mode)
+#### Pull `SCL` low for 5 seconds (this can be used to put IC in bootloader mode)
 ```
 python vct_cli.py --pull-scl 0 5
 ```
