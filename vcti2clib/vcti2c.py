@@ -70,7 +70,6 @@ class VCTI2C(object):
         # Restore pin mode
         self.gpio.set_mode(self.SCL, pigpio.INPUT)
 
-
     def read_byte_from_addr_subaddr(self, addr, sub_addr):
         """Read one byte from addr/sub_addr or addr/offset"""
         self.gpio.bb_i2c_open(self.SDA, self.SCL, self.I2C_SPEED)
@@ -82,7 +81,6 @@ class VCTI2C(object):
         self.gpio.bb_i2c_close(self.SDA)
         return data
     
-
     def write_byte_to_addr_subaddr(self, addr, sub_addr, data):
         """Write one byte from addr/sub_addr or addr/offset"""
         self.gpio.bb_i2c_open(self.SDA, self.SCL, self.I2C_SPEED)
@@ -101,7 +99,6 @@ class VCTI2C(object):
         _, data = self.gpio.bb_i2c_zip(self.SDA, cmd)
         self.gpio.bb_i2c_close(self.SDA)
         return data
-    
 
     def write_word_to_addr_subaddr(self, addr, sub_addr, word_high, word_low):
         """Read a word from addr/sub_addr"""
@@ -110,7 +107,6 @@ class VCTI2C(object):
         _, data = self.gpio.bb_i2c_zip(self.SDA, cmd)
         self.gpio.bb_i2c_close(self.SDA)
         return data
-
     
     def write_block_to_addr_range(self, start_addr, end_addr, buffer):
         """Write data block to address range, where buffer is a list of bytes
@@ -132,7 +128,6 @@ class VCTI2C(object):
                     return 0
         
         return data
-    
 
     def read_block_from_addr_offset(self, addr, offset_start, offset_end):
         """(VCT External) Read data block from address by specifying start and end offsets 
@@ -143,7 +138,6 @@ class VCTI2C(object):
             data.append(value)
         
         return data
-
 
     def read_block_from_addr_range(
         self, 

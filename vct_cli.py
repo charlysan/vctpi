@@ -11,14 +11,13 @@ def signal_handler(sig, frame, vct: VCTI2C):
     sys.exit(0)
 
 def parse_arguments():
-
         example_text = r'''Examples:
 
         vct_cli --rbo 0x50 0x10
         vci_cli --wbo 0x50 0x10 0x36
         vci_cli --pull-scl 0 3
         '''
-
+        
         parser = argparse.ArgumentParser(
             description="VCT cli tool can be used to talk to VCT49xl ICs",
             epilog=example_text,
@@ -51,10 +50,8 @@ def main():
     vct = None
     signal.signal(signal.SIGINT, lambda sig, frame: signal_handler(sig, frame, vct))
 
-
     args = parse_arguments()
     vct = VCTI2C()
-
 
     if args.pull_fa1:
         level, delay = args.pull_fa1
@@ -63,7 +60,6 @@ def main():
     if args.pull_scl:
         level, delay = args.pull_scl
         vct.pull_scl(int(level), delay=float(delay))
-
 
     if args.rbo:
         arg1, arg2 = args.rbo
@@ -107,7 +103,6 @@ def main():
             for data_byte in page:
                 sys.stdout.buffer.write(data_byte)
     
-    
     elif args.rbas:
         arg1, arg2 = args.rbas
         addr = parse_byte(arg1)
@@ -116,7 +111,6 @@ def main():
         vct = VCTI2C()
         data = vct.read_byte_from_addr_subaddr(addr, sub_addr)
         print(bytearray_to_hex(data)) 
-    
     
     elif args.wbas:
         arg1, arg2, arg3 = args.wbas
@@ -137,7 +131,6 @@ def main():
         data = vct.read_word_from_addr_subaddr(addr, sub_addr)
         print(bytearray_to_hex(data)) 
     
-    
     elif args.wwas:
         arg1, arg2, arg3, arg4 = args.wwas
         addr = parse_byte(arg1)
@@ -148,7 +141,6 @@ def main():
         vct = VCTI2C()
         data = vct.write_word_to_addr_subaddr(addr, sub_addr, high_word, low_word)
         print(bytearray_to_hex(data)) 
-
 
     elif args.wmf:
         arg1, arg2, arg3 = args.wmf 
@@ -172,12 +164,8 @@ def main():
         vtc = VCTI2C()
         data = vtc.write_block_to_addr_range(addr_start, addr_end, buffer)
 
-
-
     if vct:
         vct.__del__()
-
-
 
 def parse_byte(data):
     try:
@@ -188,7 +176,6 @@ def parse_byte(data):
     except ValueError:
         print("Invalid input (%s). Please use integer or hex string (e.g. 0x4d)" % data)
         exit(-1)
-
 
 class MultiParamsAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
