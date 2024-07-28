@@ -1,6 +1,6 @@
 # vctpi
 
-This tool is the result of reverse-engineering the I2C bus of a Panasonic CRT and can be used to communicate with Micronas VCT video controller through i2c using a Raspberry Pi. A detailed explanation of the process can be found on [this wiki](https://github.com/charlysan/crt_stuff/wiki/I2C-Data-Injection-In-Panasonic-CRT).
+This tool is the result of reverse-engineering the I2C bus of a Panasonic CRT, and can be used to communicate with Micronas VCT video controller via i2c using a Raspberry Pi. A detailed explanation of the process can be found on [this wiki](https://github.com/charlysan/crt_stuff/wiki/I2C-Data-Injection-In-Panasonic-CRT).
 
 
 ## Table of contents
